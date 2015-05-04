@@ -94,9 +94,10 @@ Example
 //one-to-one
 PhotoSchema.morphOne('Photo','photoable');
 ...
+```
 
 
-### `morpMany(modelName,morphName)`
+### `morphMany(modelName,morphName)`
 Specifies the owned model in one-to-many polymorphism. In case of `Product` and `Photo` the owned model is `Photo`. `modelName` is valid model name of the owned side and `morpName` is the name of polymorphic association formed. `morpName` controls the name of fields used to store the formed association.
 
 Example
