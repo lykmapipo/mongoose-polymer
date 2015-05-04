@@ -35,7 +35,7 @@ describe('Polymer morphMany', function() {
 
         async
             .waterfall([
-                function createMorpOne(next) {
+                function createMorpMany(next) {
                     user
                         .setPhoto({
                             name: name
@@ -94,7 +94,7 @@ describe('Polymer morphMany', function() {
 
         async
             .waterfall([
-                function createMorpOne(next) {
+                function createMorpMany(next) {
                     user
                         .setPhoto({
                             name: name
