@@ -5,26 +5,49 @@
 Polymorphic associations for [mongoose](https://github.com/Automattic/mongoose) inspired by [laravel polymorphic relations](http://laravel.com/docs/4.2/eloquent#polymorphic-relations)
 
 ## What is it
-Polymorphic relations allow a model to belong to more than one other model, on a single association. For example, you might have a photo model that belongs to either a user model or an product model. 
+Polymorphic associations allow a model to belong to more than one other model, on a single association. For example, you might have a photo model that belongs to either a user model or an product model. 
 
 ## Installation
-```bash
+```sh
 $ npm install --save mongoose-polymer
 ```
 
 ## Usage
+All you have to do is to require `mongoose-polymer` after `mongoose` prior to your schema definition. This allow `mongoose-polymer` to patch `Schema` and add all required boilerplates.
 
-```javascript
-var police = require('mongoose-polymer');
+```js
+var mongoose = require('mongoose');
+var polymer = require('mongoose-polymer');
+```
+## Polymorphic One-to-One
+To define polymorphic `one-to-one` with `mongoose-polymer` just use `morphBy` and `morphOne` schema methods. Consider a case where a `user schema` and `product Schema` each having single photo.
 
-var User = new Schema({ ... });
+Example
+```js
+//photo schema
+var PhotoSchema = new Schema({
+   ... 
+});
+PhotoSchema.morphBy('User','photoable');
+PhotoSchema.morphBy('Product','photoable');
+var Photo = mongoose.model('Photo',PhotoSchema);
 
-User.plugin(police, options);
+//user schema
+var UserSchema = new Schema({
+   ... 
+});
+UserSchema.morphOne('Photo','photoable');
+var User = mongoose.model('User',UserSchema);
+
+//product schema
+var ProductSchema = new Schema({
+   ... 
+});
+PhotoSchema.morphOne('Photo','photoable');
+var Product = mongoose.model('Product',ProductSchema);
 ```
 
-## Options
-
-(Under Construction)
+## Polymorphic One-to-Many
 
 ## Testing
 * Clone this repository
