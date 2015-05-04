@@ -33,7 +33,7 @@ describe('Polymer morphBy', function() {
         /*jshint camelcase:false*/
         expect(PhotoSchema.paths.photoableId).to.exist;
         expect(PhotoSchema.paths.photoableId.instance).to.be.equal('ObjectID');
-        expect(PhotoSchema.paths.photoableId._index.unique).to.be.true;
+        expect(PhotoSchema.paths.photoableId._index).to.be.true;
 
         expect(PhotoSchema.paths.photoableType).to.exist;
         expect(PhotoSchema.paths.photoableType.instance).to.be.equal('String');

@@ -43,7 +43,7 @@ Schema.prototype.morphBy = function(modelName, morphName) {
     var morphIdField = morphName + 'Id';
     fields[morphIdField] = {
         type: ObjectId,
-        unique: true
+        index: true
     };
 
     var morphTypeField = morphName + 'Type';
@@ -129,4 +129,72 @@ Schema.prototype.morphOne = function(modelName, morphName) {
 //------------------------------------------------------------------------------
 //add morphMany to schema
 //------------------------------------------------------------------------------
-Schema.prototype.morphMany = function() {};
+Schema.prototype.morphMany = function(modelName, morphName) {
+    //add morphOne finder
+    modelName = inflection.singularize(modelName);
+
+    //add morphMany `get` one
+    this.methods['get' + modelName] = function(id, callback) {
+        var criteria = buildMorpOneCriteria.call(this, morphName);
+
+        var query = mongoose
+            .model(modelName)
+            .findById(id)
+            .where(criteria);
+
+        if (_.isFunction(callback)) {
+            return query.exec(callback);
+        } else {
+            return query;
+        }
+    };
+
+    //add morphMany `get` all
+    var pluralModeName = inflection.pluralize(modelName);
+    this.methods['get' + pluralModeName] = function(callback) {
+        var criteria = buildMorpOneCriteria.call(this, morphName);
+
+        var query = mongoose
+            .model(modelName)
+            .find(criteria);
+
+        if (_.isFunction(callback)) {
+            return query.exec(callback);
+        } else {
+            return query;
+        }
+    };
+
+    //add morphMany `set`
+    this.methods['set' + modelName] = function(morphOne, callback) {
+        var criteria = buildMorpOneCriteria.call(this, morphName);
+
+        if (_.isArray(morphOne)) {
+            morphOne = morphOne.map(function(morphedOne) {
+                return _.extend(morphedOne, criteria);
+            });
+        } else {
+            morphOne = _.extend(morphOne, criteria);
+        }
+
+        return mongoose
+            .model(modelName)
+            .create(morphOne, callback);
+    };
+
+    //add morphMany remove one
+    this.methods['remove' + modelName] = function(id, callback) {
+        var criteria = buildMorpOneCriteria.call(this, morphName);
+
+        var query = mongoose
+            .model(modelName)
+            .findByIdAndRemove(id)
+            .where(criteria);
+
+        if (_.isFunction(callback)) {
+            return query.exec(callback);
+        } else {
+            return query;
+        }
+    };
+};
