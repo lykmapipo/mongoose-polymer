@@ -20,7 +20,7 @@ var mongoose = require('mongoose');
 var polymer = require('mongoose-polymer');
 ```
 ## Polymorphic One-to-One
-To define polymorphic `one-to-one` with `mongoose-polymer` just use `morphBy` and `morphOne` schema methods. Consider a case where a `user schema` and `product Schema` each having single photo.
+To define polymorphic `one-to-one` with `mongoose-polymer` just use `morphBy` and `morphOne` schema methods. Consider a case where a `user schema` and `product Schema` each having a `single photo`.
 
 Example
 ```js
@@ -48,6 +48,64 @@ var Product = mongoose.model('Product',ProductSchema);
 ```
 
 ## Polymorphic One-to-Many
+To define polymorphic `one-to-many` with `mongoose-polymer` just use `morphBy` and `morphMany` schema methods. Consider a case where a `user schema` and `product Schema` each having `multiple photos`.
+
+Example
+```js
+//photo schema
+var PhotoSchema = new Schema({
+   ... 
+});
+PhotoSchema.morphBy('User','photoable');
+PhotoSchema.morphBy('Product','photoable');
+var Photo = mongoose.model('Photo',PhotoSchema);
+
+//user schema
+var UserSchema = new Schema({
+   ... 
+});
+UserSchema.morphMany('Photo','photoable');
+var User = mongoose.model('User',UserSchema);
+
+//product schema
+var ProductSchema = new Schema({
+   ... 
+});
+PhotoSchema.morphMany('Photo','photoable');
+var Product = mongoose.model('Product',ProductSchema);
+```
+
+## API
+
+### `morphBy(modelName,morphName)`
+Specifies the owning model of polymorphism. In case of `Product` and `Photo` the owning model is `Product`. `modelName` is valid model name of the owning side and `morpName` is the name of polymorphic association formed. `morpName` controls the name of fields used to store the formed association.
+
+Example
+```js
+PhotoSchema.morphBy('Product','photoable');
+...
+```
+
+### `morpOne(modelName,morphName)`
+Specifies the owned model in one-to-one polymorphism. In case of `Product` and `Photo` the owned model is `Photo`. `modelName` is valid model name of the owned side and `morpName` is the name of polymorphic association formed. `morpName` controls the name of fields used to store the formed association.
+
+Example
+```js
+//one-to-one
+PhotoSchema.morphOne('Photo','photoable');
+...
+
+
+### `morpMany(modelName,morphName)`
+Specifies the owned model in one-to-many polymorphism. In case of `Product` and `Photo` the owned model is `Photo`. `modelName` is valid model name of the owned side and `morpName` is the name of polymorphic association formed. `morpName` controls the name of fields used to store the formed association.
+
+Example
+```js
+//one-to-many
+PhotoSchema.morphMany('Photo','photoable');
+...
+```
+
 
 ## Testing
 * Clone this repository

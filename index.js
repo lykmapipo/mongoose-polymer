@@ -15,7 +15,7 @@ function getMorpByModelName() {
     return inflection.classify(inflection.singularize(this.collection.name));
 }
 
-function buildMorpOneCriteria(morphName) {
+function buildMorpCriteria(morphName) {
     /*jshint validthis:true*/
     var morphBy = getMorpByModelName.call(this);
 
@@ -77,7 +77,7 @@ Schema.prototype.morphOne = function(modelName, morphName) {
     modelName = inflection.singularize(modelName);
 
     this.methods['get' + modelName] = function(callback) {
-        var criteria = buildMorpOneCriteria.call(this, morphName);
+        var criteria = buildMorpCriteria.call(this, morphName);
 
         var query = mongoose.model(modelName).findOne(criteria);
 
@@ -90,7 +90,7 @@ Schema.prototype.morphOne = function(modelName, morphName) {
 
     //add morphOne setter
     this.methods['set' + modelName] = function(morphOne, callback) {
-        var criteria = buildMorpOneCriteria.call(this, morphName);
+        var criteria = buildMorpCriteria.call(this, morphName);
 
         morphOne = _.extend(morphOne, criteria);
 
@@ -111,7 +111,7 @@ Schema.prototype.morphOne = function(modelName, morphName) {
 
     //add morphOne remover
     this.methods['remove' + modelName] = function(callback) {
-        var criteria = buildMorpOneCriteria.call(this, morphName);
+        var criteria = buildMorpCriteria.call(this, morphName);
 
         var query = mongoose
             .model(modelName)
@@ -135,7 +135,7 @@ Schema.prototype.morphMany = function(modelName, morphName) {
 
     //add morphMany `get` one
     this.methods['get' + modelName] = function(id, callback) {
-        var criteria = buildMorpOneCriteria.call(this, morphName);
+        var criteria = buildMorpCriteria.call(this, morphName);
 
         var query = mongoose
             .model(modelName)
@@ -152,7 +152,7 @@ Schema.prototype.morphMany = function(modelName, morphName) {
     //add morphMany `get` all
     var pluralModeName = inflection.pluralize(modelName);
     this.methods['get' + pluralModeName] = function(callback) {
-        var criteria = buildMorpOneCriteria.call(this, morphName);
+        var criteria = buildMorpCriteria.call(this, morphName);
 
         var query = mongoose
             .model(modelName)
@@ -166,8 +166,8 @@ Schema.prototype.morphMany = function(modelName, morphName) {
     };
 
     //add morphMany `set`
-    this.methods['set' + modelName] = function(morphOne, callback) {
-        var criteria = buildMorpOneCriteria.call(this, morphName);
+    this.methods['add' + modelName] = function(morphOne, callback) {
+        var criteria = buildMorpCriteria.call(this, morphName);
 
         if (_.isArray(morphOne)) {
             morphOne = morphOne.map(function(morphedOne) {
@@ -184,7 +184,7 @@ Schema.prototype.morphMany = function(modelName, morphName) {
 
     //add morphMany remove one
     this.methods['remove' + modelName] = function(id, callback) {
-        var criteria = buildMorpOneCriteria.call(this, morphName);
+        var criteria = buildMorpCriteria.call(this, morphName);
 
         var query = mongoose
             .model(modelName)

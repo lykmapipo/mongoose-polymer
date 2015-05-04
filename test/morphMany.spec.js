@@ -37,7 +37,7 @@ describe('Polymer morphMany', function() {
             .waterfall([
                 function createMorpMany(next) {
                     user
-                        .setPhoto({
+                        .addPhoto({
                             name: name
                         }, function(error, photo) {
 
@@ -67,11 +67,11 @@ describe('Polymer morphMany', function() {
     it('should be able to add morphed one instance', function(done) {
         /*jshint camelcase:false*/
         var user = new Product();
-        expect(user).to.respondTo('setPhoto');
+        expect(user).to.respondTo('addPhoto');
 
         var name = faker.lorem.words(1)[0];
         user
-            .setPhoto({
+            .addPhoto({
                 name: name
             }, function(error, photo) {
 
@@ -96,7 +96,7 @@ describe('Polymer morphMany', function() {
             .waterfall([
                 function createMorpMany(next) {
                     user
-                        .setPhoto({
+                        .addPhoto({
                             name: name
                         }, function(error, photo) {
 
@@ -119,10 +119,10 @@ describe('Polymer morphMany', function() {
     it('should be able to add morphed many instance', function(done) {
         /*jshint camelcase:false*/
         var user = new Product();
-        expect(user).to.respondTo('setPhoto');
+        expect(user).to.respondTo('addPhoto');
 
         user
-            .setPhoto([{
+            .addPhoto([{
                 name: faker.lorem.words(1)[0]
             }, {
                 name: faker.lorem.words(1)[0]
@@ -144,7 +144,7 @@ describe('Polymer morphMany', function() {
         async.waterfall([
             function createMorpMany(next) {
                 user
-                    .setPhoto([{
+                    .addPhoto([{
                         name: faker.lorem.words(1)[0]
                     }, {
                         name: faker.lorem.words(1)[0]
