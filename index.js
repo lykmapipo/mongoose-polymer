@@ -76,7 +76,7 @@ Schema.prototype.morphOne = function(modelName, morphName) {
     //add morphOne finder
     modelName = inflection.singularize(modelName);
 
-    this.methods[modelName.toLowerCase()] = function(callback) {
+    this.methods['get' + modelName] = function(callback) {
         var criteria = buildMorpOneCriteria.call(this, morphName);
 
         var query = mongoose.model(modelName).findOne(criteria);

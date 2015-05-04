@@ -27,14 +27,45 @@ describe('Polymer morphOne', function() {
     });
 
     it('should have morphOne finder', function(done) {
-        expect(new User()).to.respondTo('photo');
+        expect(new User()).to.respondTo('getPhoto');
         done();
     });
 
     it('should be able to return morphed one instance', function(done) {
-        new User()
-            .photo()
-            .exec(done);
+        /*jshint camelcase:false*/
+        var user = new User();
+        var name = faker.lorem.words(1)[0];
+
+        async
+            .waterfall([
+                function createMorpOne(next) {
+                    user
+                        .setPhoto({
+                            name: name
+                        })
+                        .exec(function(error, photo) {
+
+                            expect(photo.name).to.equal(name);
+                            expect(photo.photoableId).to.be.eql(user._id);
+                            expect(photo.photoableType).to.equal('User');
+
+                            next(error, photo);
+                        });
+                },
+                function getMorphOne(photo, next) {
+
+                    user.getPhoto(next);
+                }
+            ], function(error, photo) {
+                expect(photo).to.not.be.null;
+
+                expect(photo.name).to.equal(name);
+                expect(photo.photoableId).to.be.eql(user._id);
+                expect(photo.photoableType).to.equal('User');
+
+                done(error, photo);
+            });
+        /*jshint camelcase:true*/
     });
 
     it('should be able to set morphed one instance', function(done) {
