@@ -7,6 +7,11 @@ Polymorphic associations for [mongoose](https://github.com/Automattic/mongoose) 
 ## What is it
 Polymorphic relations allow a model to belong to more than one other model, on a single association. For example, you might have a photo model that belongs to either a user model or an product model. 
 
+## Installation
+```bash
+$ npm install --save mongoose-polymer
+```
+
 ## Usage
 
 ```javascript
