@@ -88,6 +88,24 @@ PhotoSchema.morphBy('Product','photoable');
 ...
 ```
 
+#### `morphName(callback)`
+An instance method whose name is determines by `morphName` will be added to owned side model instance to enable retrieving owning side model instance. For the above cases `Photo` model instance will gain `photoable` instance method to enable it to retrieve either `Product` or `User` instance.
+
+Example
+```js
+//when want to retrieve user from photo instance
+photo
+    .photoable(function(error,user){
+        ...
+    });
+
+//when want to retrieve product from photo instance
+photo
+    .photoable(function(error,product){
+        ...
+    });
+```
+
 ### `morpOne(modelName,morphName)`
 Specifies the owned model in one-to-one polymorphism. In case of `Product` and `Photo` the owned model is `Photo`. `modelName` is valid model name of the owned side and `morpName` is the name of polymorphic association formed. `morpName` controls mongoose criteria building in the owning side.
 
