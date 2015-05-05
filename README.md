@@ -49,12 +49,12 @@ var Product = mongoose.model('Product',ProductSchema);
 ```
 
 ## Polymorphic One-to-Many
-To define polymorphic `one-to-many` with `mongoose-polymer` just use `[morphBy]()` and `[morphMany]()` schema methods. Consider a case where a `user schema` and `product Schema` each having `multiple photos`. Here `user schema` is the owning side(or parent) and `photo schema` is the owned side(or child).
+To define polymorphic `one-to-many` with `mongoose-polymer` use `[morphBy]()` schema method on the owned model side and `[morphMany]()` schema method method in the owning model side. Consider a case where a `user schema` and `product schema` each having `multiple photos`. Here `user schema` and `product schema` form the owning side(or parent) and `photo schema` is the owned side(or child).
 
 
 Example
 ```js
-//photo schema
+//photo schema definition
 var PhotoSchema = new Schema({
    ... 
 });
@@ -62,14 +62,14 @@ PhotoSchema.morphBy('User','photoable');
 PhotoSchema.morphBy('Product','photoable');
 var Photo = mongoose.model('Photo',PhotoSchema);
 
-//user schema
+//user schema definition
 var UserSchema = new Schema({
    ... 
 });
 UserSchema.morphMany('Photo','photoable');
 var User = mongoose.model('User',UserSchema);
 
-//product schema
+//product schema definition
 var ProductSchema = new Schema({
    ... 
 });
