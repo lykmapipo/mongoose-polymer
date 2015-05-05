@@ -116,6 +116,49 @@ PhotoSchema.morphOne('Photo','photoable');
 ...
 ```
 
+#### `getModelName(callback)`
+Additional instance method whose name is determined by the name of the owned model, will be added to the owning model to enable it to retrieve its polymer. For the case of the above examples `User` and `Product` model instance will have instance method with name `getPhoto` to enable them to get their photo. If `callback` is not supplied `valid mongoose query` will be returned to allow additional chaining.
+
+Example
+```js
+//when retrieving photo instance from the user instance
+user
+    .getPhoto()
+    //more conditions
+    .exec(function(error,photo){
+        ...
+    });
+```
+
+
+#### `setModelName(morphOne,callback)`
+Additional instance method whose name is determined by the name of the owned model, will be added to the owning model to enable it to set its polymer. For the case of the above examples `User` and `Product` model instance will have instance method with name `setPhoto` to enable them to get their photo. If `callback` is not supplied `valid mongoose query` will be returned to allow additional chaining.
+
+Example
+```js
+//when set photo instance for the user instance
+user
+    .setPhoto({name:'mongoose-polymer'})
+    .exec(function(error,photo){
+        ...
+    });
+```
+
+#### `removeModelName(callback)`
+Additional instance method whose name is determined by the name of the owned model, will be added to the owning model to enable it to remove its polymer. For the case of the above examples `User` and `Product` model instance will have instance method with name `removePhoto` to enable them to remove their photo. If `callback` is not supplied `valid mongoose query` will be returned to allow additional chaining.
+
+Example
+```js
+//when removing photo instance from the user instance
+user
+    .removePhoto()
+    //more conditions
+    .exec(function(error,photo){
+        ...
+    });
+```
+
+
 ### `morphMany(modelName,morphName)`
 Specifies the owned model in one-to-many polymorphism. In case of `Product` and `Photo` the owned model is `Photo`. `modelName` is valid model name of the owned side and `morpName` is the name of polymorphic association formed. `morpName` controls mongoose criteria building in the owning side.
 
