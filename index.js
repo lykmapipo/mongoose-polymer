@@ -121,7 +121,7 @@ Schema.prototype.morphBy = function(modelName, morphName) {
         criteria._id = this[morphIdField];
 
         //build owner finder query
-        var query = mongoose.model(modelName).find(criteria);
+        var query = mongoose.model(modelName).findOne(criteria);
 
         //if callback provided execute query immediately
         if (_.isFunction(callback)) {

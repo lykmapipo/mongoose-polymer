@@ -2,6 +2,8 @@
 
 //dependencies
 var path = require('path');
+var faker = require('faker');
+var async = require('async');
 var expect = require('chai').expect;
 var mongoose = require('mongoose');
 //load polymer
@@ -18,13 +20,14 @@ describe('Polymer morphBy', function() {
         });
 
         PhotoSchema.morphBy('User', 'photoable');
+        PhotoSchema.morphBy('Passport', 'photoable');
 
         Photo = mongoose.model('Photo', PhotoSchema);
 
         done();
     });
 
-    it('should have morphBy ability', function(done) {
+    it('should be able to morph', function(done) {
         expect(PhotoSchema).to.respondTo('morphBy');
         done();
     });
@@ -43,9 +46,58 @@ describe('Polymer morphBy', function() {
         done();
     });
 
-    it('should have morphBy finder', function(done) {
+    it('should be able to find owning model instance', function(done) {
+        /*jshint camelcase:false*/
+        var PassportSchema = new Schema({
+            owner: String
+        });
+        PassportSchema.morphOne('Photo', 'photoable');
+        var Passport = mongoose.model('Passport', PassportSchema);
+
         expect(new Photo()).to.respondTo('photoable');
-        done();
+
+        var _passport;
+        var photoName = faker.lorem.words(1)[0];
+
+        async
+            .waterfall(
+                [
+                    function createPassport(next) {
+                        Passport
+                            .create({
+                                owner: faker.lorem.words(1)[0]
+                            }, next);
+                    },
+                    function setPassoprtPhoto(passport, next) {
+                        _passport = passport;
+
+                        passport
+                            .setPhoto({
+                                name: photoName
+                            })
+                            .exec(function(error, photo) {
+
+                                expect(photo.name).to.equal(photoName);
+                                expect(photo.photoableId).to.be.eql(passport._id);
+                                expect(photo.photoableType).to.equal('Passport');
+
+                                next(error, photo);
+                            });
+                    },
+                    function getPhotoPassport(photo, next) {
+                        photo.photoable(next);
+                    }
+                ],
+                function(error, passport) {
+                    expect(passport).to.not.be.null;
+                    expect(passport.collection.name).to.be.equal('passports');
+
+                    expect(passport.owner).to.equal(_passport.owner);
+                    expect(passport._id).to.be.eql(passport._id);
+
+                    done(error, passport);
+                });
+        /*jshint camelcase:true*/
     });
 
 });
