@@ -5,7 +5,7 @@
 Polymorphic associations for [mongoose](https://github.com/Automattic/mongoose) inspired by [laravel polymorphic relations](http://laravel.com/docs/4.2/eloquent#polymorphic-relations) and others.
 
 ## What is it
-`mongoose-polymer` and thus polymorphic associations, allow a model to belong to more than one other model, on a single association. For example, you might have a photo model that belongs to either a user model or an product model. 
+`mongoose-polymer` and thus polymorphic associations, allow a model to belong to more than one other model on a single association. For example, you might have a photo model that belongs to either a user model or an product model. 
 
 ## Installation
 ```sh
@@ -46,10 +46,36 @@ var ProductSchema = new Schema({
 });
 PhotoSchema.morphOne('Photo','photoable');
 var Product = mongoose.model('Product',ProductSchema);
+
+//samples
+//adding user photo
+user
+    .setPhoto({name:'user photo'})
+    .exec(function(error,photo){
+        ...
+    });
+
+//get user photo
+user
+    .getPhoto(function(error,photo){
+        ...
+    });
+
+//removing user photo
+user
+    .removePhoto(function(error,photo){
+        ...
+    });
+
+//get photo user
+photo
+    .photoable(function(error,user){
+        ...    
+    });
 ```
 
 ## Polymorphic One-to-Many
-To define polymorphic `one-to-many` with `mongoose-polymer`, use [morphBy](#morphbymodelnamemorphname) schema method on the owned model side and [morphMany](#morphmanymodelnamemorphname) schema method method in the owning model side. Consider a case where a `user schema` and `product schema` each having `multiple photos`. Here `user schema` and `product schema` form the owning side(or parent) and `photo schema` is the owned side(or child).
+To define polymorphic `one-to-many` with `mongoose-polymer`, use [morphBy](#morphbymodelnamemorphname) schema method on the owned model side and [morphMany](#morphmanymodelnamemorphname) schema method method in the owning model side. Consider a case where a `user schema` and `product schema` each having `multiple photo`. Here `user schema` and `product schema` form the owning side(or parent) and `photo schema` is the owned side(or child).
 
 
 Example
@@ -75,6 +101,49 @@ var ProductSchema = new Schema({
 });
 PhotoSchema.morphMany('Photo','photoable');
 var Product = mongoose.model('Product',ProductSchema);
+
+//samples
+//add user photo
+user
+    .addPhoto({name:'user photo'})
+    .exec(function(error,photo){
+        ...
+    });
+
+//add user photos
+user
+    .addPhoto([{name:'first photo'},{name:'second phot'}])
+    .exec(function(error,photos){
+        ...
+    });
+
+//get all user photos
+user
+    .getPhotos()
+    .exec(function(error,photos){
+        ...
+    });
+
+//get one user photo
+user
+    .getPhoto(photoId)
+    .exec(function(error,photo){
+        ...    
+    });
+
+//remove all user photos
+user
+    .removePhotos()
+    .exec(function(error,photos){
+        ...
+    });
+
+//remove one user photo
+user
+    .removePhoto(photoId)
+    exec(function(error,photo){
+        ...
+    });
 ```
 
 ## API
@@ -88,7 +157,7 @@ PhotoSchema.morphBy('Product','photoable');
 ...
 ```
 
-Following model instance methods will be added to the owning model side
+Following model instance methods will be added to the owned model instance
 
 #### `morphName(callback)`
 An instance method whose name is determines by `morphName` will be added to owned side model instance to enable retrieving owning side model instance. For the above cases `Photo` model instance will gain `photoable` instance method to enable it to retrieve either `Product` or `User` instance.
