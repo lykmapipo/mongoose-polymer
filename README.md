@@ -21,7 +21,7 @@ var polymer = require('mongoose-polymer');
 ```
 
 ## Polymorphic One-to-One
-To define polymorphic `one-to-one` with `mongoose-polymer` use [morphBy](#morphbymodelnamemorphname)  schema method on the owned model side and [morphOne](#morponemodelnamemorphname) schema method on the owning model side. Consider a case where a `user schema` and `product schema` each having a `single photo`. Here `user schema` and `product schema` form the owning side(or parent) and `photo schema` is the owned side(or child).
+To define polymorphic `one-to-one` with `mongoose-polymer`, use [morphBy](#morphbymodelnamemorphname)  schema method on the owned model side and [morphOne](#morponemodelnamemorphname) schema method on the owning model side. Consider a case where a `user schema` and `product schema` each having a `single photo`. Here `user schema` and `product schema` form the owning side(or parent) and `photo schema` is the owned side(or child).
 
 Example
 ```js
@@ -49,7 +49,7 @@ var Product = mongoose.model('Product',ProductSchema);
 ```
 
 ## Polymorphic One-to-Many
-To define polymorphic `one-to-many` with `mongoose-polymer` use [morphBy](#morphbymodelnamemorphname) schema method on the owned model side and [morphMany](#morphmanymodelnamemorphname) schema method method in the owning model side. Consider a case where a `user schema` and `product schema` each having `multiple photos`. Here `user schema` and `product schema` form the owning side(or parent) and `photo schema` is the owned side(or child).
+To define polymorphic `one-to-many` with `mongoose-polymer`, use [morphBy](#morphbymodelnamemorphname) schema method on the owned model side and [morphMany](#morphmanymodelnamemorphname) schema method method in the owning model side. Consider a case where a `user schema` and `product schema` each having `multiple photos`. Here `user schema` and `product schema` form the owning side(or parent) and `photo schema` is the owned side(or child).
 
 
 Example
@@ -89,7 +89,7 @@ PhotoSchema.morphBy('Product','photoable');
 ```
 
 ### `morpOne(modelName,morphName)`
-Specifies the owned model in one-to-one polymorphism. In case of `Product` and `Photo` the owned model is `Photo`. `modelName` is valid model name of the owned side and `morpName` is the name of polymorphic association formed. `morpName` controls the name of fields used to store the formed association.
+Specifies the owned model in one-to-one polymorphism. In case of `Product` and `Photo` the owned model is `Photo`. `modelName` is valid model name of the owned side and `morpName` is the name of polymorphic association formed. `morpName` controls mongoose criteria building in the owning side.
 
 Example
 ```js
@@ -98,9 +98,8 @@ PhotoSchema.morphOne('Photo','photoable');
 ...
 ```
 
-
 ### `morphMany(modelName,morphName)`
-Specifies the owned model in one-to-many polymorphism. In case of `Product` and `Photo` the owned model is `Photo`. `modelName` is valid model name of the owned side and `morpName` is the name of polymorphic association formed. `morpName` controls the name of fields used to store the formed association.
+Specifies the owned model in one-to-many polymorphism. In case of `Product` and `Photo` the owned model is `Photo`. `modelName` is valid model name of the owned side and `morpName` is the name of polymorphic association formed. `morpName` controls mongoose criteria building in the owning side.
 
 Example
 ```js
