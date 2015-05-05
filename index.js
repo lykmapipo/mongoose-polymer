@@ -357,4 +357,28 @@ Schema.prototype.morphMany = function(modelName, morphName) {
             return query;
         }
     };
+
+    //add all owned model remover
+    this.methods['remove' + pluralModeName] = function(callback) {
+        //this refer to the owning model context
+
+        //prepare owning model find criteria
+        var criteria = buildMorpCriteria.call(this, morphName);
+
+        //find and remove all owned model
+        var query = mongoose
+            .model(modelName)
+            .remove(criteria);
+
+
+        //if callback provided execute query immediately
+        if (_.isFunction(callback)) {
+            return query.exec(callback);
+        }
+
+        //otherwise return mongoose query
+        else {
+            return query;
+        }
+    };
 };

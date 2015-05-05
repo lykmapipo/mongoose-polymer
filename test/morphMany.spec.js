@@ -26,7 +26,28 @@ describe('Polymer morphMany', function() {
         done();
     });
 
-    it('should be able to return morphed one instance', function(done) {
+
+    it('should be able to add one owned model instance', function(done) {
+        /*jshint camelcase:false*/
+        var user = new Product();
+        expect(user).to.respondTo('addPhoto');
+
+        var name = faker.lorem.words(1)[0];
+        user
+            .addPhoto({
+                name: name
+            }, function(error, photo) {
+
+                expect(photo.name).to.be.equal(name);
+                expect(photo.photoableId).to.be.eql(user._id);
+                expect(photo.photoableType).to.be.equal('Product');
+
+                done(error, photo);
+            });
+        /*jshint camelcase:true*/
+    });
+
+    it('should be able to find one owned model instance', function(done) {
         /*jshint camelcase:false*/
         var user = new Product();
         var name = faker.lorem.words(1)[0];
@@ -64,28 +85,8 @@ describe('Polymer morphMany', function() {
         /*jshint camelcase:true*/
     });
 
-    it('should be able to add morphed one instance', function(done) {
-        /*jshint camelcase:false*/
-        var user = new Product();
-        expect(user).to.respondTo('addPhoto');
 
-        var name = faker.lorem.words(1)[0];
-        user
-            .addPhoto({
-                name: name
-            }, function(error, photo) {
-
-                expect(photo.name).to.be.equal(name);
-                expect(photo.photoableId).to.be.eql(user._id);
-                expect(photo.photoableType).to.be.equal('Product');
-
-                done(error, photo);
-            });
-        /*jshint camelcase:true*/
-    });
-
-
-    it('should be able to remove morphed one instance', function(done) {
+    it('should be able to remove one owned model instance', function(done) {
         /*jshint camelcase:false*/
         var user = new Product();
         expect(user).to.respondTo('removePhoto');
@@ -116,7 +117,7 @@ describe('Polymer morphMany', function() {
         /*jshint camelcase:true*/
     });
 
-    it('should be able to add morphed many instance', function(done) {
+    it('should be able to add many owned model instances', function(done) {
         /*jshint camelcase:false*/
         var user = new Product();
         expect(user).to.respondTo('addPhoto');
@@ -136,7 +137,7 @@ describe('Polymer morphMany', function() {
         /*jshint camelcase:true*/
     });
 
-    it('should be able to get morphed many instance', function(done) {
+    it('should be able to find many owned model instances', function(done) {
         /*jshint camelcase:false*/
         var user = new Product();
         expect(user).to.respondTo('getPhotos');
@@ -156,6 +157,35 @@ describe('Polymer morphMany', function() {
         ], function(error, photos) {
             expect(photos).to.not.be.null;
             expect(photos.length).to.be.equal(2);
+
+            done(error, photos);
+        });
+        /*jshint camelcase:true*/
+    });
+
+
+    it('should be able to remove many owned model instances', function(done) {
+        /*jshint camelcase:false*/
+        var user = new Product();
+        expect(user).to.respondTo('removePhotos');
+
+        async.waterfall([
+            function createMorpMany(next) {
+                user
+                    .addPhoto([{
+                        name: faker.lorem.words(1)[0]
+                    }, {
+                        name: faker.lorem.words(1)[0]
+                    }], next);
+            },
+            function removeMorpMany(photos, next) {
+                user.removePhotos(next);
+            },
+            function(results, next) {
+                user.getPhotos(next);
+            }
+        ], function(error, photos) {
+            expect(photos).to.be.empty;
 
             done(error, photos);
         });
