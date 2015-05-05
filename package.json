@@ -9,7 +9,8 @@
         "polymorphic",
         "polymorphism",
         "association",
-        "inheritance"
+        "inheritance",
+        "link"
     ],
     "main": "index.js",
     "scripts": {
