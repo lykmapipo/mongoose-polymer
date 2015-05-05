@@ -62,9 +62,12 @@ function buildMorpCriteria(morphName) {
     return criteria;
 }
 
+
 //------------------------------------------------------------------------------
-//morphBy patches
+//morphBy schema patches
 //------------------------------------------------------------------------------
+//
+//
 /**
  * @function
  * @description Build polymorphism owning side model, set up required attributes
@@ -74,6 +77,8 @@ function buildMorpCriteria(morphName) {
  * @public
  */
 Schema.prototype.morphBy = function(modelName, morphName) {
+    //this refer to the schema instance context
+    //
     //check fo model name
     if (!modelName) {
         throw new Error('No model name provided');
@@ -105,6 +110,8 @@ Schema.prototype.morphBy = function(modelName, morphName) {
 
     //adding polymorphism owner finder
     this.methods[morphName] = function(callback) {
+        //this refer to the model instance context
+
         //prepare polymorphism owner id criteria
         //
         //TODO review if this enough criteria to find
@@ -128,31 +135,62 @@ Schema.prototype.morphBy = function(modelName, morphName) {
     };
 };
 
+
 //------------------------------------------------------------------------------
-//add morphOne to schema
+//morphOne schema patches
 //------------------------------------------------------------------------------
+//
+//
+/**
+ * @function
+ * @description Adding set, get and remove owned polymer in polymorphism owning 
+ *              model instance
+ * @param  {String} modelName valid mongoose model name that is owned in this 
+ *                            polymorphism
+ * @param  {String} morphName name of the formed polymorphism
+ * @public
+ */
 Schema.prototype.morphOne = function(modelName, morphName) {
-    //add morphOne finder
+    //this refer to the schema instance context
+
+    //singularize owner model if user gave a plural model name
     modelName = inflection.singularize(modelName);
 
+    //adding getter to get owned model instance.
     this.methods['get' + modelName] = function(callback) {
+        //this refer to the model instance context
+
+        //prepare criteria to get the owning model
         var criteria = buildMorpCriteria.call(this, morphName);
 
+        //query for a single model since we are using morpOne
+        //polymorphism type
         var query = mongoose.model(modelName).findOne(criteria);
 
+        //if callback is provided execute query immediately
         if (_.isFunction(callback)) {
             return query.exec(callback);
-        } else {
+        }
+
+        //otherwise return mongoose query
+        else {
             return query;
         }
     };
 
-    //add morphOne setter
+    //adding setter to set owned model
     this.methods['set' + modelName] = function(morphOne, callback) {
+        //this refer to the model instance context
+
+        //prepare owning model criteria
         var criteria = buildMorpCriteria.call(this, morphName);
 
+        //prepare data to upsert or update
         morphOne = _.extend(morphOne, criteria);
 
+        //find owned model instance
+        //if not exist create one and return it
+        //otherwise update it and return updated model
         var query = mongoose
             .model(modelName)
             .findOneAndUpdate(criteria, morphOne, {
@@ -160,25 +198,37 @@ Schema.prototype.morphOne = function(modelName, morphName) {
                 upsert: true
             });
 
+        //if callback provided execute query immediately
         if (_.isFunction(callback)) {
             return query.exec(callback);
-        } else {
+        }
+
+        //othewise return mongoose query
+        else {
             return query;
         }
 
     };
 
-    //add morphOne remover
+    //adding owned model remover
     this.methods['remove' + modelName] = function(callback) {
+        //this refer to the model instance context
+
+        //prepare owning model criteria
         var criteria = buildMorpCriteria.call(this, morphName);
 
+        //create owned model remove query
         var query = mongoose
             .model(modelName)
             .findOneAndRemove(criteria);
 
+        //if callback provided execute query immediately
         if (_.isFunction(callback)) {
             return query.exec(callback);
-        } else {
+        }
+
+        //otherwise return mongoose query
+        else {
             return query;
         }
     };
@@ -186,73 +236,124 @@ Schema.prototype.morphOne = function(modelName, morphName) {
 
 
 //------------------------------------------------------------------------------
-//add morphMany to schema
+//morphMany schema patches
 //------------------------------------------------------------------------------
+//
+//
+/**
+ * @function
+ * @description Adding add, get and remove owned polymer in polymorphism owning 
+ *              model instance
+ * @param  {String} modelName valid mongoose model name that is owned in this 
+ *                            polymorphism
+ * @param  {String} morphName name of the formed polymorphism
+ * @public
+ */
 Schema.prototype.morphMany = function(modelName, morphName) {
-    //add morphOne finder
+    //this refer to the schema instance context
+
+    //get singular form of the owned model name
+    //in case plural form was provided
     modelName = inflection.singularize(modelName);
 
-    //add morphMany `get` one
+    //add get one owned model of this polymorpism
     this.methods['get' + modelName] = function(id, callback) {
+        //this refer to the owning model instance context
+
+        //build owning model find criterias
         var criteria = buildMorpCriteria.call(this, morphName);
 
+        //query one of owned model
+        //using provided id
         var query = mongoose
             .model(modelName)
             .findById(id)
             .where(criteria);
 
+        //if callback provide execute query immediately
         if (_.isFunction(callback)) {
             return query.exec(callback);
-        } else {
+        }
+
+        //otherwise return mongoose query
+        else {
             return query;
         }
     };
 
-    //add morphMany `get` all
+    //add `get` all owned model
     var pluralModeName = inflection.pluralize(modelName);
     this.methods['get' + pluralModeName] = function(callback) {
+        //this refer to the owning model instance context
+
+        //prepare owning model find criteria
         var criteria = buildMorpCriteria.call(this, morphName);
 
+        //find all owned model
         var query = mongoose
             .model(modelName)
             .find(criteria);
 
+        //if callback provided execute query immediately
         if (_.isFunction(callback)) {
             return query.exec(callback);
-        } else {
+        }
+
+        //otherwise return mongoose query
+        else {
             return query;
         }
     };
 
-    //add morphMany `set`
+    //add owned model `add`er to allow to add owned
+    //model instance to the owning model
     this.methods['add' + modelName] = function(morphOne, callback) {
+        //this refer to the owning model instance context
+
+        //prepare owning model find criteria
         var criteria = buildMorpCriteria.call(this, morphName);
 
+        //if more than one owned model need to be added
+        //prepare them
         if (_.isArray(morphOne)) {
             morphOne = morphOne.map(function(morphedOne) {
                 return _.extend(morphedOne, criteria);
             });
-        } else {
+        }
+        //it just a single owned model we want to add 
+        else {
             morphOne = _.extend(morphOne, criteria);
         }
 
+        //if callback provided execute query
+        //otherwise return the promise/deferer
         return mongoose
             .model(modelName)
             .create(morphOne, callback);
     };
 
-    //add morphMany remove one
+    //add owned model remover
     this.methods['remove' + modelName] = function(id, callback) {
+        //this refer to the owning model context
+
+        //prepare owning model find criteria
         var criteria = buildMorpCriteria.call(this, morphName);
 
+        //find and remove owned model
+        //of the given id
         var query = mongoose
             .model(modelName)
             .findByIdAndRemove(id)
             .where(criteria);
 
+
+        //if callback provided execute query immediately
         if (_.isFunction(callback)) {
             return query.exec(callback);
-        } else {
+        }
+
+        //otherwise return mongoose query
+        else {
             return query;
         }
     };
