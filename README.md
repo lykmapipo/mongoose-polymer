@@ -88,6 +88,8 @@ PhotoSchema.morphBy('Product','photoable');
 ...
 ```
 
+Following model instance methods will be added to the owning model side
+
 #### `morphName(callback)`
 An instance method whose name is determines by `morphName` will be added to owned side model instance to enable retrieving owning side model instance. For the above cases `Photo` model instance will gain `photoable` instance method to enable it to retrieve either `Product` or `User` instance.
 
@@ -115,6 +117,8 @@ Example
 PhotoSchema.morphOne('Photo','photoable');
 ...
 ```
+
+The following model instance methods will be added on owning model instance
 
 #### `getModelName(callback)`
 Additional instance method whose name is determined by the name of the owned model, will be added to the owning model to enable it to retrieve its polymer. For the case of the above examples `User` and `Product` model instance will have instance method with name `getPhoto` to enable them to get their photo. If `callback` is not supplied `valid mongoose query` will be returned to allow additional chaining.
@@ -167,6 +171,84 @@ Example
 //one-to-many
 PhotoSchema.morphMany('Photo','photoable');
 ...
+```
+
+The following model instance methods will be added to the owning model instance
+
+#### `getModelName(id,callback)`
+Additional instance method whose name is determined by the name of the owned model, will be added to the owning model to enable it to get one of its polymer. For the case of the above examples `User` and `Product` model instance will have instance method with name `getPhoto` to enable them to retrieve one of  their photo. If `callback` is not supplied `valid mongoose query` will be returned to allow additional chaining.
+
+Example
+```js
+//when retrieving one photo instance from the user instance
+user
+    .getPhoto(_id)
+    //more conditions
+    .exec(function(error,photo){
+        ...
+    });
+```
+
+#### `getModelNames(callback)`
+Additional instance method whose name is determined by pluralizing the name of the owned model, will be added to the owning model to enable it to get all of its polymer. For the case of the above examples `User` and `Product` model instance will have instance method with name `getPhotos` to enable them to retrieve all their photos. If `callback` is not supplied `valid mongoose query` will be returned to allow additional chaining.
+
+Example
+```js
+//when retrieving all photos instance from the user instance
+user
+    .getPhotos()
+    //more conditions
+    .exec(function(error,photos){
+        ...
+    });
+```
+
+#### `addModelName(morpOne,callback)`
+Additional instance method whose name is determined by the name of the owned model, will be added to the owning model to enable it to add one or more polymer. For the case of the above examples `User` and `Product` model instance will have instance method with name `addPhoto` to enable them to add one or more photo. If `callback` is not supplied `mongoose promise` will be returned for evaluation.
+
+Example
+```js
+//when adding one photo instance from the user instance
+user
+    .addPhoto({name:'photo name'})
+    .then(function(error,photo){
+        ...
+    });
+
+//when adding multiple photos instance from the user instance
+user
+    .addPhoto([{name:'photo name'},{name:'another photo'}])
+    .then(function(error,photo){
+        ...
+    });
+```
+
+#### `removeModelName(id,callback)`
+Additional instance method whose name is determined by the name of the owned model, will be added to the owning model to enable it to remove one of its polymer. For the case of the above examples `User` and `Product` model instance will have instance method with name `removePhoto` to enable them to remove one of their photo. If `callback` is not supplied `valid mongoose query` will be returned to allow additional chaining.
+
+Example
+```js
+//when removing one of the photo instance from the user instance
+user
+    .removePhoto(_id)
+    //more conditions
+    .exec(function(error,photo){
+        ...
+    });
+```
+
+#### `removeModelNames(callback)`
+Additional instance method whose name is determined by pluralizing the name of the owned model, will be added to the owning model to enable it to remove its polymers. For the case of the above examples `User` and `Product` model instance will have instance method with name `removePhotos` to enable them to remove their photos. If `callback` is not supplied `valid mongoose query` will be returned to allow additional chaining.
+
+Example
+```js
+//when removing photos instance from the user instance
+user
+    .removePhotos()
+    //more conditions
+    .exec(function(error,photo){
+        ...
+    });
 ```
 
 
