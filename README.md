@@ -1,11 +1,11 @@
-# mongoose-polymer (WIP)
+# mongoose-polymer
 
 [![Build Status](https://travis-ci.org/lykmapipo/mongoose-polymer.svg?branch=master)](https://travis-ci.org/lykmapipo/mongoose-polymer)
 
-Polymorphic associations for [mongoose](https://github.com/Automattic/mongoose) inspired by [laravel polymorphic relations](http://laravel.com/docs/4.2/eloquent#polymorphic-relations)
+Polymorphic associations for [mongoose](https://github.com/Automattic/mongoose) inspired by [laravel polymorphic relations](http://laravel.com/docs/4.2/eloquent#polymorphic-relations) and others.
 
 ## What is it
-Polymorphic associations allow a model to belong to more than one other model, on a single association. For example, you might have a photo model that belongs to either a user model or an product model. 
+`mongoose-polymer` and thus polymorphic associations, allow a model to belong to more than one other model, on a single association. For example, you might have a photo model that belongs to either a user model or an product model. 
 
 ## Installation
 ```sh
@@ -13,18 +13,19 @@ $ npm install --save mongoose-polymer
 ```
 
 ## Usage
-All you have to do is to require `mongoose-polymer` after `mongoose` prior to your schema definition. This allow `mongoose-polymer` to patch `Schema` and add all required boilerplates.
+Require `mongoose-polymer` after `mongoose` prior to your schema definition. This allows `mongoose-polymer` to patch `Schema` and add all required polymorphism boilerplates.
 
 ```js
 var mongoose = require('mongoose');
 var polymer = require('mongoose-polymer');
 ```
+
 ## Polymorphic One-to-One
-To define polymorphic `one-to-one` with `mongoose-polymer` just use `morphBy` and `morphOne` schema methods. Consider a case where a `user schema` and `product Schema` each having a `single photo`.
+To define polymorphic `one-to-one` with `mongoose-polymer` use `[morphBy]()`  schema method on the owned model side and `[morphOne]()` schema method on the owning model side. Consider a case where a `user schema` and `product schema` each having a `single photo`. Here `user schema` and `product schema` form the owning side(or parent) and `photo schema` is the owned side(or child).
 
 Example
 ```js
-//photo schema
+//photo schema defenition
 var PhotoSchema = new Schema({
    ... 
 });
@@ -32,14 +33,14 @@ PhotoSchema.morphBy('User','photoable');
 PhotoSchema.morphBy('Product','photoable');
 var Photo = mongoose.model('Photo',PhotoSchema);
 
-//user schema
+//user schema definition
 var UserSchema = new Schema({
    ... 
 });
 UserSchema.morphOne('Photo','photoable');
 var User = mongoose.model('User',UserSchema);
 
-//product schema
+//product schema definition
 var ProductSchema = new Schema({
    ... 
 });
@@ -48,7 +49,8 @@ var Product = mongoose.model('Product',ProductSchema);
 ```
 
 ## Polymorphic One-to-Many
-To define polymorphic `one-to-many` with `mongoose-polymer` just use `morphBy` and `morphMany` schema methods. Consider a case where a `user schema` and `product Schema` each having `multiple photos`.
+To define polymorphic `one-to-many` with `mongoose-polymer` just use `[morphBy]()` and `[morphMany]()` schema methods. Consider a case where a `user schema` and `product Schema` each having `multiple photos`. Here `user schema` is the owning side(or parent) and `photo schema` is the owned side(or child).
+
 
 Example
 ```js
