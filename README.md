@@ -177,7 +177,7 @@ photo
     });
 ```
 
-### `morpOne(modelName,morphName)`
+### `morphOne(modelName,morphName)`
 Specifies the owned model in one-to-one polymorphism. In case of `Product` and `Photo` the owned model is `Photo`. `modelName` is valid model name of the owned side and `morpName` is the name of polymorphic association formed. `morpName` controls mongoose criteria building in the owning side.
 
 Example
@@ -272,7 +272,7 @@ user
     });
 ```
 
-#### `addModelName(morpOne,callback)`
+#### `addModelName(morphOne,callback)`
 Additional instance method whose name is determined by the name of the owned model, will be added to the owning model to enable it to add one or more polymer. For the case of the above examples `User` and `Product` model instance will have instance method with name `addPhoto` to enable them to add one or more photo. If `callback` is not supplied `mongoose promise` will be returned for evaluation.
 
 Example

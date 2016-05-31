@@ -163,7 +163,7 @@ Schema.prototype.morphOne = function(modelName, morphName) {
         //prepare criteria to get the owning model
         var criteria = buildMorpCriteria.call(this, morphName);
 
-        //query for a single model since we are using morpOne
+        //query for a single model since we are using morphOne
         //polymorphism type
         var query = mongoose.model(modelName).findOne(criteria);
 
